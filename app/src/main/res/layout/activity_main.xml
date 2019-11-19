@@ -40,7 +40,19 @@
         android:layout_height="40dp"
         android:layout_below="@id/editTextPassword"
         android:layout_marginTop="40dp"
-        android:text="Login"
+        android:text="登入FSK信号调制"
+        android:background="@drawable/bg_btn4"
+        android:textColor="#FFFFFF"
+        android:textSize="15dp"
+
+        />
+    <Button
+        android:id="@+id/btn_psk"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_below="@id/btn_bluetooth"
+        android:layout_marginTop="10dp"
+        android:text="登入PSK信号调制"
         android:background="@drawable/bg_btn4"
         android:textColor="#FFFFFF"
         android:textSize="15dp"

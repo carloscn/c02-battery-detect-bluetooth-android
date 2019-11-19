@@ -9,58 +9,40 @@ package com.mltbsn.root.c02_battery_detect_android;
 * */
 
 import android.Manifest;
-import android.app.Activity;
-import android.app.ListActivity;
 import android.bluetooth.BluetoothSocket;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.app.AlertDialog;
 import android.content.pm.PackageManager;
-import android.database.DataSetObserver;
 import android.graphics.Color;
-import android.icu.text.SymbolTable;
-import android.location.LocationManager;
 import android.os.Handler;
 import android.os.Message;
-import android.provider.Settings;
-import android.provider.SyncStateContract;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.TextureView;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
+import android.view.ViewManager;
 import android.widget.AdapterView;
-import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothSocket;
 import android.widget.EditText;
-import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.IOException;
+import android.widget.RadioButton;
+
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
-
-
 
 
 public class BluetoothBleActivity extends AppCompatActivity {
@@ -69,7 +51,6 @@ public class BluetoothBleActivity extends AppCompatActivity {
     private Button mBtnSend;
     private Button mBtnDisconnect;
     private Button mBtnScan;
-    private Button mBtnClear;
     private Button mBtnOpen;
     private Button mBtnClose;
     private ListView mLvDeviceList;
@@ -85,11 +66,22 @@ public class BluetoothBleActivity extends AppCompatActivity {
     private List<BluetoothDevice> mBlueList = new ArrayList<>();
     private Context context;
     private Handler mUIHandler = new MyHandler();
-    private EditText    mEditTextErrorState;
-    private EditText    mEditTextErrorPosition;
-    private EditText    mEditTextVoltage;
-    private EditText    mEditTextCurrent;
-    private EditText    mEditTextTemp;
+    private EditText mEditWaveFreq1;
+    private EditText mEditWaveFreq2;
+    private EditText mEditWaveFreq3;
+    private EditText mEditWaveFreq4;
+    private RadioGroup mRadioGroup;
+    private RadioGroup mRadioGroupType;
+    private EditText    mEditInfo;
+    private EditText    mEditRate;
+    private RadioButton mRadioBtnLf;
+    private RadioButton mRadioBtnDc;
+    private RadioButton mRadioFsk;
+    private RadioButton mRadioPsk;
+    private RadioButton mRadioMFsk;
+    private RadioButton mRadioCw;
+    
+
 
     String recv_str;
     private static final UUID MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
@@ -104,21 +96,27 @@ public class BluetoothBleActivity extends AppCompatActivity {
 
         context =   this;
         mBluetoothDeviceAdapter = new BluetoothDeviceAdapter(this);
-
+        mBtnClose = findViewById(R.id.btn_close);
         mBtnSend = findViewById(R.id.btn_send);
         mBtnDisconnect = findViewById(R.id.btn_disconnect);
         mBtnScan = findViewById(R.id.btn_scan);
-        mBtnClear   =   findViewById(R.id.btn_clear);
-        mBtnClose   =   findViewById(R.id.btn_close);
         mBtnOpen    =   findViewById(R.id.btn_open);
         mLvDeviceList = findViewById(R.id.lv_bluelist);
-        mEditTextCurrent = findViewById(R.id.editTextCurrent);
-        mEditTextErrorPosition = findViewById(R.id.editTextErrorPosition);
-        mEditTextErrorState = findViewById(R.id.editTextErrorSate);
-        mEditTextTemp = findViewById(R.id.editTextTemp);
-        mEditTextVoltage = findViewById(R.id.editTextVoltate);
-//        mTextView   =   findViewById(R.id.tv_recv);
-//        mEditText   =   findViewById(R.id.et_send);
+        mEditWaveFreq1 = findViewById(R.id.waveFreq1);
+        mEditWaveFreq2 = findViewById(R.id.waveFreq2);
+        mEditWaveFreq3 = findViewById(R.id.waveFreq3);
+        mEditWaveFreq4 = findViewById(R.id.waveFreq4);
+        mEditInfo = findViewById(R.id.infoHex);
+        mEditRate = findViewById(R.id.rate);
+        mBtnSend.setEnabled(false);
+        mRadioGroup = findViewById(R.id.signal);
+        mRadioGroupType = findViewById(R.id.signal_type);
+        mRadioBtnDc = findViewById(R.id.cbVol);
+        mRadioBtnLf = findViewById(R.id.cbCw);
+        mRadioFsk = findViewById(R.id.fsk_radio);
+        mRadioMFsk = findViewById(R.id.mfsk_radio);
+        mRadioPsk = findViewById(R.id.psk_radio);
+        mRadioCw = findViewById(R.id.cw_radio);
         setListener();
 
         /*
@@ -229,18 +227,56 @@ public class BluetoothBleActivity extends AppCompatActivity {
 
     }
 
-
     private void setListener( ) {
         OnClick onClick = new OnClick();
-
         mBtnOpen.setOnClickListener(onClick);
         mBtnSend.setOnClickListener(onClick);
         mBtnScan.setOnClickListener(onClick);
-        mBtnClear.setOnClickListener(onClick);
         mBtnClose.setOnClickListener(onClick);
         mBtnDisconnect.setOnClickListener(onClick);
+        mRadioGroupType.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                if (checkedId == R.id.fsk_radio) {
+                    mEditWaveFreq1.setEnabled(false);
+                    mEditWaveFreq1.setBackgroundColor(0x696969);
+                    mEditWaveFreq2.setEnabled(false);
+                    mEditWaveFreq2.setBackgroundColor(0x696969);
+                    mEditWaveFreq3.setEnabled(true);
+                    mEditWaveFreq3.setBackgroundColor(~0);
+                    mEditWaveFreq4.setEnabled(true);
+                    mEditWaveFreq4.setBackgroundColor(~0);
+                }else if (checkedId == R.id.mfsk_radio) {
+                    mEditWaveFreq1.setEnabled(true);
+                    mEditWaveFreq1.setBackgroundColor(~0);
+                    mEditWaveFreq2.setEnabled(true);
+                    mEditWaveFreq2.setBackgroundColor(~0);
+                    mEditWaveFreq3.setEnabled(true);
+                    mEditWaveFreq3.setBackgroundColor(~0);
+                    mEditWaveFreq4.setEnabled(true);
+                    mEditWaveFreq4.setBackgroundColor(~0);
+                } else {
+                    mEditWaveFreq1.setEnabled(false);
+                    mEditWaveFreq1.setBackgroundColor(0x696969);
+                    mEditWaveFreq2.setEnabled(false);
+                    mEditWaveFreq2.setBackgroundColor(0x696969);
+                    mEditWaveFreq3.setEnabled(false);
+                    mEditWaveFreq3.setBackgroundColor(0x696969);
+                    mEditWaveFreq4.setEnabled(true);
+                    mEditWaveFreq4.setBackgroundColor(~0);
+                }
+            }
+        });
+
 
     }
+    public static int HexStringToInt(String HexString) {
+
+        int inJTFingerLockAddress = Integer.valueOf(HexString, 16);
+
+        return inJTFingerLockAddress;
+    }
+
     /*
     *  add
     * */
@@ -253,15 +289,18 @@ public class BluetoothBleActivity extends AppCompatActivity {
                     mBluetoothAdapter.enable();
                     mBtnOpen.setEnabled(false);
                     mBtnClose.setEnabled(true);
+
                     break;
                 case R.id.btn_close:
                     mBluetoothAdapter.disable();
                     mBtnOpen.setEnabled(true);
                     mBtnClose.setEnabled(false);
+                    mBtnSend.setEnabled(false);
                     break;
                 case R.id.btn_disconnect:
                     connectThread.cancel();
                     showToast("Bluetooth connection has been closed!");
+                    mBtnSend.setEnabled(false);
                     mLvDeviceList.setBackgroundColor(0);
                     mLvDeviceList.setEnabled(true);
                     break;
@@ -284,11 +323,84 @@ public class BluetoothBleActivity extends AppCompatActivity {
                     mBluetoothAdapter.startDiscovery();
                     break;
                 case R.id.btn_send:
-                    //String text = mEditText.getText().toString();
-                    ///connectThread.sendData( text.getBytes() );
-                    break;
-                case R.id.btn_clear:
-                    mTextView.setText("");
+                    byte signalType = 0;
+                    long freq1 = Integer.valueOf( mEditWaveFreq1.getText().toString() );
+                    long freq2 = Integer.valueOf( mEditWaveFreq2.getText().toString() );
+                    long freq3 = Integer.valueOf( mEditWaveFreq3.getText().toString() );
+                    long freq4 = Integer.valueOf( mEditWaveFreq4.getText().toString() );
+                    long rate = Integer.valueOf( mEditRate.getText().toString() );
+                    byte sumCheck = 0;
+                    // 处理value
+
+                    if (mRadioFsk.isChecked()) {
+                        signalType = (byte)0x02;
+                    }else if (mRadioMFsk.isChecked()) {
+                        signalType = (byte)0x03;
+                    }else if (mRadioPsk.isChecked()) {
+                        signalType = (byte)0x04;
+                    }else if (mRadioCw.isChecked()) {
+                        signalType = (byte)0x01;
+                    }
+
+                    String valueStr = mEditInfo.getText().toString();
+                    String[] valueBuffer = valueStr.split(" ");
+                    if (valueBuffer.length > 255) {
+                        Toast toast=Toast.makeText(getApplicationContext(), "数据发送最大长度255字节", Toast.LENGTH_LONG);
+                        toast.show();
+                        return;
+                    }
+                    byte[] valueByte = new byte[ valueBuffer.length ];
+                    for (int i = 0; i < valueBuffer.length; i ++) {
+                        valueByte[i] = (byte)HexStringToInt(valueBuffer[i]);
+                    }
+
+                    byte signalState = 0;
+                    if (mRadioBtnLf.isChecked()) {
+                        signalState = (byte)1;
+                    }
+                    if (mRadioBtnDc.isChecked()) {
+                        signalState = (byte)2;
+                    }
+                    /*"0C 11 CC 33 BB 55 AA 0A"*/
+                    byte[] comData = new byte[valueBuffer.length + 16];
+
+
+                    int index = 0;
+                    comData[index++] = (byte)0xAA;
+                    comData[index++] = (byte)0xBB;
+                    comData[index++] = signalType;
+                    sumCheck = (byte)(sumCheck ^ comData[index-1]);
+                    comData[index++] = (byte)valueBuffer.length;
+                    sumCheck = (byte)(sumCheck ^ comData[index-1]);
+                    for (int i = 0; i < valueBuffer.length; i ++) {
+                        comData[index++] = valueByte[i];
+                        sumCheck = (byte)(sumCheck ^ comData[index-1]);
+                    }
+                    comData[index++] = (byte)(freq1/256);
+                    sumCheck = (byte)(sumCheck ^ comData[index-1]);
+                    comData[index++] = (byte)(freq1%256);
+                    sumCheck = (byte)(sumCheck ^ comData[index-1]);
+                    comData[index++] = (byte)(freq2/256);
+                    sumCheck = (byte)(sumCheck ^ comData[index-1]);
+                    comData[index++] = (byte)(freq2%256);
+                    sumCheck = (byte)(sumCheck ^ comData[index-1]);
+                    comData[index++] = (byte)(freq3/256);
+                    sumCheck = (byte)(sumCheck ^ comData[index-1]);
+                    comData[index++] = (byte)(freq3%256);
+                    sumCheck = (byte)(sumCheck ^ comData[index-1]);
+                    comData[index++] = (byte)(freq4/256);
+                    sumCheck = (byte)(sumCheck ^ comData[index-1]);
+                    comData[index++] = (byte)(freq4%256);
+                    sumCheck = (byte)(sumCheck ^ comData[index-1]);
+                    comData[index++] = (byte)(rate);
+                    sumCheck = (byte)(sumCheck ^ comData[index-1]);
+                    comData[index++] = (byte)(signalState);
+                    sumCheck = (byte)(sumCheck ^ comData[index-1]);
+                    comData[index++] = sumCheck;
+                    comData[index++] = (byte)0xCC;
+                    index = 0;
+                    System.out.print(comData);
+                    connectThread.sendData( comData );
                     break;
 
             }
@@ -382,9 +494,9 @@ public class BluetoothBleActivity extends AppCompatActivity {
                     System.out.println("stop listenner");
                     break;
                 case Constant.MSG_GOT_DATA:
-                    recv_str += String.valueOf(msg.obj);
-                    mEditTextErrorState.setText(recv_str);
-                    recv_str = "";
+                    recv_str = String.valueOf(msg.obj);
+                    Toast toast=Toast.makeText(getApplicationContext(), "已更新配置信息", Toast.LENGTH_LONG);
+                    toast.show();
                     /*
                     if (recv_str.length() >= 55) {
                         if (recv_str.charAt(0) == '!' && recv_str.contains("@")) {
@@ -504,8 +616,9 @@ public class BluetoothBleActivity extends AppCompatActivity {
                     System.out.println("Connected to Server");
                     mLvDeviceList.setEnabled(false);
                     mLvDeviceList.setBackgroundColor(Color.rgb(119,136,153));
-                    showToast("Bluetooth connection has been set up!");
-                    mEditTextErrorPosition.setText("设备运行中..");
+                    toast=Toast.makeText(getApplicationContext(), "蓝牙已经建立通信", Toast.LENGTH_LONG);
+                    toast.show();
+                    mBtnSend.setEnabled(true);
                     break;
                 case Constant.MSG_GOT_A_CLINET:
                     System.out.println("Got a Client");

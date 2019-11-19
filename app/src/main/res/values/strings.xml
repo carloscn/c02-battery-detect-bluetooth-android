@@ -1,4 +1,4 @@
 <resources>
-    <string name="app_name">C02_BATTERY_DETECT_ANDROID</string>
+    <string name="app_name">磁感应通信信号发射控制</string>
     <string name="action_settings">Settings</string>
 </resources>

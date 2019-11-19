@@ -1,87 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_height="match_parent"
-    android:layout_width="match_parent">
+    android:layout_width="match_parent"
+
+    >
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical" >
+        android:orientation="vertical"
+        >
 
         <TextView
             android:id="@+id/tv_bluelist"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingTop="10dp"
-            android:text="Bluetooth List:"
+            android:text="蓝牙列表:"
             android:textColor="#000"
             android:textSize="15dp"
             />
         <ListView
             android:id="@+id/lv_bluelist"
             android:layout_width="match_parent"
-            android:layout_height="160dp"
+            android:layout_height="100dp"
             android:paddingTop="1dp"
             android:layout_marginTop="5dp">
         </ListView>
 
         <TableLayout
-            android:layout_width="360dp"
+            android:layout_width="match_parent"
+            android:gravity="center"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
             >
             <TableRow
                 android:layout_width="match_parent"
                 android:layout_marginHorizontal="10dp"
+                android:gravity="center"
                 >
                 <Button
-                    android:id="@+id/btn_send"
-                    android:layout_width="110dp"
-                    android:layout_height="wrap_content"
-                    android:text="发送信息" />
-
-                <Button
                     android:id="@+id/btn_disconnect"
-                    android:layout_width="110dp"
+                    android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:text="断开连接" />
 
                 <Button
                     android:id="@+id/btn_scan"
-                    android:layout_width="110dp"
+                    android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:text="扫描蓝牙" />
-            </TableRow>
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_marginHorizontal="10dp"
-                >
-                <Button
-                    android:id="@+id/btn_clear"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="清除状态" />
-
                 <Button
                     android:id="@+id/btn_open"
-                    android:layout_width="wrap_content"
+                    android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:text="打开蓝牙" />
 
                 <Button
                     android:id="@+id/btn_close"
-                    android:layout_width="wrap_content"
+                    android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:text="关闭蓝牙" />
             </TableRow>
         </TableLayout>
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="信息状态显示:"
-            android:textColor="#000"
-            android:textSize="15dp"
-            android:layout_marginTop="15dp"
-            />
+
+
 
         <!--<TextView-->
             <!--android:id="@+id/tv_recv"-->
@@ -90,124 +73,262 @@
             <!--android:layout_marginTop="5dp"-->
             <!--android:textColor="#000"-->
             <!--/>-->
-
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            >
         <TableLayout
             android:layout_width="match_parent"
-            android:layout_height="210dp">
-            <TableRow>
+            android:layout_height="240dp"
+            android:layout_gravity="center_horizontal"
+            >
+            <TableRow
+                android:layout_width="match_parent"
+                android:gravity="center"
+                android:layout_gravity="center_horizontal"
+                >
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="信号种类:"
+                    android:textColor="#000"
+                    android:textSize="15dp"
+                    android:layout_marginTop="10dp"
+                    />
+                <RadioGroup
+                    android:id="@+id/signal_type"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_gravity="center_horizontal">
+                    <RadioButton
+                        android:id="@+id/fsk_radio"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:checked="true"
+                        android:text="FSK  " />
+                    <RadioButton
+                        android:id="@+id/mfsk_radio"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:checked="false"
+                        android:text="MFSK  " />
+                    <RadioButton
+                        android:id="@+id/psk_radio"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:checked="false"
+                        android:text="PSK  " />
+                    <RadioButton
+                        android:id="@+id/cw_radio"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:checked="false"
+                        android:text="CW" />
+                </RadioGroup>
+            </TableRow>
+            <TableRow
+                android:layout_gravity="center_horizontal"
+                >
                 <TextView
 
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="故障状态:"
+                    android:text="载波频率1（Hz）:"
                     android:textColor="#000"
+                    android:textSize="15dp"
+                    android:layout_marginTop="10dp"
+                    />
+
+                <EditText
+                    android:id="@+id/waveFreq1"
+                    android:layout_width="284dp"
+                    android:layout_height="25dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/bg_username"
+                    android:inputType="number"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:text="1000"
+                    android:textColor="#000"
+
                     android:textSize="15dp"
 
-                    />
-                <EditText
-                    android:id="@+id/editTextErrorSate"
-                    android:layout_width="280dp"
-                    android:layout_height="wrap_content"
-                    android:text="正常"
-                    android:textColor="#000"
-                    android:textSize="15dp"
-                    android:editable="false"
-                    android:inputType="none"
                     />
             </TableRow>
             <TableRow>
                 <TextView
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="运行状态:"
+                    android:layout_height="25dp"
+                    android:text="载波频率2（Hz）:"
+                    android:layout_marginTop="10dp"
                     android:textColor="#000"
                     android:textSize="15dp"
                     />
                 <EditText
-                    android:id="@+id/editTextErrorPosition"
+                    android:id="@+id/waveFreq2"
                     android:layout_width="280dp"
-                    android:layout_height="wrap_content"
-                    android:text="无接入设备"
+                    android:layout_height="25dp"
+                    android:text="500"
+                    android:background="@drawable/bg_username"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:layout_marginTop="10dp"
                     android:textColor="#000"
                     android:textSize="15dp"
-                    android:editable="false"
-                    android:inputType="none"
+                    android:inputType="number"
+                    />
+            </TableRow>
+            <TableRow>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="25dp"
+                    android:text="载波频率3（Hz）:"
+                    android:layout_marginTop="10dp"
+                    android:textColor="#000"
+                    android:textSize="15dp"
+                    />
+                <EditText
+                    android:id="@+id/waveFreq3"
+                    android:layout_width="280dp"
+                    android:layout_height="25dp"
+                    android:text="500"
+                    android:background="@drawable/bg_username"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:layout_marginTop="10dp"
+                    android:textColor="#000"
+                    android:textSize="15dp"
+                    android:inputType="number"
+                    />
+            </TableRow>
+            <TableRow>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="25dp"
+                    android:text="载波频率4（Hz）:"
+                    android:layout_marginTop="10dp"
+                    android:textColor="#000"
+                    android:textSize="15dp"
+                    />
+                <EditText
+                    android:id="@+id/waveFreq4"
+                    android:layout_width="280dp"
+                    android:layout_height="25dp"
+                    android:text="500"
+                    android:background="@drawable/bg_username"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:layout_marginTop="10dp"
+                    android:textColor="#000"
+                    android:textSize="15dp"
+                    android:inputType="number"
                     />
             </TableRow>
             <TableRow>
                 <TextView
                     android:layout_width="90dp"
                     android:layout_height="wrap_content"
-                    android:text="电压信息:"
+                    android:text="发送十六进制:"
+                    android:layout_marginTop="10dp"
                     android:textColor="#000"
                     android:textSize="15dp"
                     />
                 <EditText
-                    android:id="@+id/editTextVoltate"
+                    android:id="@+id/infoHex"
                     android:layout_width="90dp"
-                    android:layout_height="wrap_content"
-                    android:text="00.00V"
+                    android:layout_height="25dp"
+                    android:text="0C 11 CC 33 BB 55 AA 0A"
+                    android:background="@drawable/bg_username"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:layout_marginTop="10dp"
                     android:textColor="#000"
                     android:textSize="15dp"
-                    android:inputType="none"
+                    android:inputType="text"
                     />
             </TableRow>
             <TableRow>
                 <TextView
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="电流信息:"
+                    android:layout_height="25dp"
+                    android:text="码元速率："
                     android:textColor="#000"
                     android:textSize="15dp"
+                    android:layout_marginTop="10dp"
+
                     />
                 <EditText
-                    android:id="@+id/editTextCurrent"
+                    android:id="@+id/rate"
                     android:layout_width="280dp"
-                    android:layout_height="wrap_content"
-                    android:text="0.000A"
+                    android:layout_height="25dp"
+                    android:text="4"
+                    android:background="@drawable/bg_username"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:layout_marginTop="10dp"
                     android:textColor="#000"
                     android:textSize="15dp"
-                    android:editable="false"
-                    android:inputType="none"
+                    android:inputType="number"
+
                     />
             </TableRow>
-            <TableRow>
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="温度信息:"
-                    android:textColor="#000"
-                    android:textSize="15dp"
-                    />
-                <EditText
-                    android:id="@+id/editTextTemp"
-                    android:layout_width="280dp"
-                    android:layout_height="wrap_content"
-                    android:text="0.000度"
-                    android:textColor="#000"
-                    android:textSize="15dp"
-                    android:editable="false"
-                    android:inputType="none"
-                    />
-            </TableRow>
+
+            <TableLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_horizontal"
+                >
+                <TableRow>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="25dp"
+                        android:text="间隔类型:            "
+                        android:textColor="#000"
+                        android:textSize="15dp"
+                        android:layout_marginTop="10dp"
+                        />
+
+                    <RadioGroup
+                        android:id="@+id/signal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_gravity="center_horizontal">
+                        <RadioButton
+                            android:id="@+id/cbCw"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:checked="false"
+                            android:text="LFM间隔    " />
+                        <RadioButton
+                            android:id="@+id/cbVol"
+                            android:layout_width="120dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:checked="true"
+                            android:text="DC间隔" />
+                    </RadioGroup>
+                </TableRow>
+            </TableLayout>
         </TableLayout>
+        </ScrollView>
 
-        <!--<TextView-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:text="Send:"-->
-            <!--android:textColor="#000"-->
-            <!--android:textSize="15dp"-->
-            <!--android:layout_marginTop="5dp"-->
-            <!--/>-->
-        <!--<EditText-->
-            <!--android:id="@+id/et_send"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="40dp"-->
-            <!--android:layout_marginTop="5dp"-->
-            <!--android:textColor="#000"-->
-            <!--android:textSize="12dp"-->
-            <!--/>-->
+        <Button
+            android:id="@+id/btn_send"
+            android:layout_width="380dp"
+            android:layout_marginTop="20dp"
+            android:layout_height="32dp"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/bg_btn4"
+            android:textColor="#FFFF"
+            android:text="配置" />
 
     </LinearLayout>
 
